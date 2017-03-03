@@ -23,6 +23,8 @@ func main() {
 	var testnet bool
 	var datadir string
 	var logLevel int
+	var host string
+	var port string
 	var bitcoindIp string
 	var bitcoindPort string
 	var bitcoindRpcUser string
@@ -31,6 +33,8 @@ func main() {
 	flag.StringVar(&datadir, "datadir", "", "Bitcoin data path")
 	flag.IntVar(&gomaxprocs, "gomaxprocs", -1, "Number of threads to use")
 	flag.IntVar(&logLevel, "loglevel", carbonchain.LOG_LEVEL_ERROR, "Set log level: 0-4; Default: 4")
+	flag.StringVar(&host, "host", "localhost", "Host for SignAndSubmit/Verify commands to connect to")
+	flag.StringVar(&port, "port", "1323", "Port to run daemon on. For SignAndSubmit/Verify commands, port to connect to")
 	flag.StringVar(&bitcoindIp, "rpcip", bitcoindIp, "Bitcoind RPC IP\n\t\t* REQUIRED ONLY FOR STORE COMMAND")
 	flag.StringVar(&bitcoindPort, "rpcport", bitcoindPort, "Bitcoind RPC Port (Default for testnet set to append 1 to this variable)\n\t\t* REQUIRED ONLY FOR store COMMAND")
 	flag.StringVar(&bitcoindRpcUser, "rpcuser", bitcoindRpcUser, "User for bitcoind RPC\n\t\t* REQUIRED ONLY FOR store COMMAND")
@@ -42,7 +46,7 @@ func main() {
 	log.Printf("datadir: %s\n", datadir)
 	wd, _ := os.Getwd()
 	log.Printf("app datadir: %s\n", wd)
-	//args := flag.Args()
+	args := flag.Args()
 
 	bitcoindRpcOptions := &rpc.RpcOptions{
 		Host:    bitcoindIp,
@@ -57,11 +61,32 @@ func main() {
 
 	showHelp := func() {
 		fmt.Fprint(os.Stderr, "Distributed Docker Trust\n(c)2017 Faruq Rasid\n\n"+
+			"  SignAndSubmit <private key> <key id> <image:tag>\n"+
+			"  Verify <image:tag>\n"+
 			"Options:\n")
 		flag.PrintDefaults()
 	}
 
 	if help {
+		showHelp()
+		return
+	}
+
+	if len(args) > 3 && strings.ToLower(args[0]) == "signandsubmit" {
+		err := CmdSignAndSubmit(host, port, args)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if len(args) > 1 && strings.ToLower(args[0]) == "verify" {
+		err := CmdVerify(host, port, args)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
+	if len(args) != 0 {
 		showHelp()
 		return
 	}
@@ -90,7 +115,7 @@ func main() {
 		}
 	}()
 
-	startHttpServer(db, bitcoindRpcOptions)
+	startHttpServer(port, db, bitcoindRpcOptions)
 }
 
 func initDb(testnet bool) *bolt.DB {
@@ -134,7 +159,7 @@ func initDb(testnet bool) *bolt.DB {
 	return db
 }
 
-func startHttpServer(db *bolt.DB, bitcoindRpcOptions *rpc.RpcOptions) {
+func startHttpServer(port string, db *bolt.DB, bitcoindRpcOptions *rpc.RpcOptions) {
 	e := echo.New()
 	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -159,5 +184,5 @@ func startHttpServer(db *bolt.DB, bitcoindRpcOptions *rpc.RpcOptions) {
 		}
 	})
 	e.GET("/get/:username", GetRootPublicKeyForUser)
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":" + port))
 }
