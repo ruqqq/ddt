@@ -224,6 +224,8 @@ func RegisterRootKey(c echo.Context) error {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
 
+	request.Username = c.Param("username")
+
 	data, err := NewRootKeyCommandFromRootKeyRequest(request, TYPE_REGISTER_ROOT_KEY)
 	if err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
@@ -291,6 +293,8 @@ func DeleteRootKey(c echo.Context) error {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
 
+	request.Username = c.Param("username")
+
 	data, err := NewRootKeyCommandFromRootKeyRequest(request, TYPE_DELETE_ROOT_KEY)
 	if err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
@@ -357,6 +361,9 @@ func RegisterKey(c echo.Context) error {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
 
+	request.Username = c.Param("username")
+	request.ImageName = c.Param("name")
+
 	data, err := NewKeyCommandFromKeyRequest(request, TYPE_REGISTER_KEY)
 	if err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
@@ -380,6 +387,8 @@ func RegisterKey(c echo.Context) error {
 			if !verify {
 				return ErrNoAccess
 			}
+		} else {
+			return ErrRootKeyDoesNotExist
 		}
 
 		return nil
@@ -404,6 +413,9 @@ func DeleteKey(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
+
+	request.Username = c.Param("username")
+	request.ImageName = c.Param("name")
 
 	data, err := NewKeyCommandFromKeyRequest(request, TYPE_DELETE_KEY)
 	if err != nil {
@@ -454,6 +466,11 @@ func RegisterSignature(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
+
+	request.Username = c.Param("username")
+	name := strings.Split(c.Param("name"), ":")
+	request.ImageName = name[0]
+	request.TagName = name[1]
 
 	data := SignatureCommand{}
 	data.Type = TYPE_REGISTER_SIGNATURE
@@ -550,6 +567,11 @@ func DeleteSignature(c echo.Context) error {
 	if err := c.Bind(request); err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
+
+	request.Username = c.Param("username")
+	name := strings.Split(c.Param("name"), ":")
+	request.ImageName = name[0]
+	request.TagName = name[1]
 
 	data := SignatureCommand{}
 	data.Type = TYPE_DELETE_SIGNATURE

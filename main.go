@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/boltdb/bolt"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/ruqqq/blockchainparser/rpc"
 	"github.com/ruqqq/carbonchain"
 	"log"
@@ -167,22 +168,41 @@ func startHttpServer(port string, db *bolt.DB, bitcoindRpcOptions *rpc.RpcOption
 			return h(cc)
 		}
 	})
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
+	}))
 	e.GET("/createKeyPair", CreateKeyPair)
 	e.POST("/signMessage", SignMessage)
 	e.POST("/verifyMessage", VerifyMessage)
-	e.POST("/registerRootKey", RegisterRootKey)
-	e.POST("/deleteRootKey", DeleteRootKey)
-	e.POST("/registerKey", RegisterKey)
-	e.POST("/deleteKey", DeleteKey)
-	e.POST("/registerSignature", RegisterSignature)
-	e.POST("/deleteSignature", DeleteSignature)
-	e.GET("/get/:username/:name", func(c echo.Context) error {
+
+	e.GET("/:username", GetRootPublicKeyForUser)
+	e.POST("/:username", RegisterRootKey)
+	e.DELETE("/:username", DeleteRootKey)
+
+	e.GET("/:username/:name", func(c echo.Context) error {
 		if len(strings.Split(c.Param("name"), ":")) == 2 {
 			return GetSignatureForTag(c)
 		} else {
 			return GetPublicKeysForImage(c)
 		}
 	})
-	e.GET("/get/:username", GetRootPublicKeyForUser)
+	e.POST("/:username/:name", func(c echo.Context) error {
+		if len(strings.Split(c.Param("name"), ":")) == 2 {
+			return RegisterSignature(c)
+		} else {
+			return RegisterKey(c)
+		}
+	})
+	e.DELETE("/:username/:name", func(c echo.Context) error {
+		if len(strings.Split(c.Param("name"), ":")) == 2 {
+			return DeleteSignature(c)
+		} else {
+			return DeleteKey(c)
+		}
+	})
+
 	e.Logger.Fatal(e.Start(":" + port))
 }
