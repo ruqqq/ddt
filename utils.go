@@ -58,7 +58,7 @@ func CmdSignAndSubmit(host string, port string, args []string) error {
 
 	var txIdResponse TxIdResponse
 
-	res, _, errs := gorequest.New().Post("http://"+host+":"+port+"/registerSignature").
+	res, _, errs := gorequest.New().Post("http://"+host+":"+port+"/"+registerSignatureBody.Username+"/"+registerSignatureBody.ImageName+":"+registerSignatureBody.TagName).
 		Set("X-BTC-FEE", "0.00001").
 		Send(string(requestJson)).
 		EndStruct(&txIdResponse)
@@ -90,7 +90,7 @@ func CmdVerify(host string, port string, args []string) error {
 	}
 
 	var getSignatureForTagResponse GetSignatureForTagResponse
-	res, _, errs := gorequest.New().Get("http://" + host + ":" + port + "/get/" + args[1]).EndStruct(&getSignatureForTagResponse)
+	res, _, errs := gorequest.New().Get("http://" + host + ":" + port + "/" + args[1]).EndStruct(&getSignatureForTagResponse)
 	if len(errs) != 0 {
 		return errs[0]
 	}
