@@ -5,6 +5,8 @@ vendors:
   rev: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
 - path: github.com/boltdb/bolt
   rev: e9cf4fae01b5a8ff89d0ec6b32f0d9c9f79aefdd
+- path: github.com/btcsuite/btcd
+  rev: 583684b21bfbde9b5fc4403916fd7c807feb0289
 - path: github.com/davecgh/go-spew
   rev: 346938d642f2ec3594ed81d874461961cd0faa76
 - path: github.com/dgrijalva/jwt-go
@@ -12,7 +14,7 @@ vendors:
 - path: github.com/docker/distribution
   rev: 08b06dc023674763e7b36d404cf0c7664cee1f5e
 - path: github.com/docker/docker
-  rev: 94d1a5b366152e5384a4bb925a40bf0a8c554a72
+  rev: 338565805c31783c63f9bb35d5b24f4c0c5656d3
 - path: github.com/docker/go-connections
   rev: a2afab9802043837035592f1c24827fb70766de9
 - path: github.com/docker/go-units
@@ -25,10 +27,24 @@ vendors:
   rev: 07c216d603d7b366c177295761280acc706a9382
 - path: github.com/fsnotify/fsnotify
   rev: 7d7316ed6e1ed2de075aab8dfc76de5d158d66e1
+- path: github.com/go-stack/stack
+  rev: 100eb0c0a9c5b306ca2fb4f165df21d80ada4b82
+- path: github.com/golang/protobuf
+  rev: 69b215d01a5606c843240eab4937eab3acee6530
+- path: github.com/golang/snappy
+  rev: 553a641470496b2327abcac10b36396bd98e45c9
 - path: github.com/gopherjs/gopherjs
   rev: 7d94d732be268c4904141f8b8604eb2d6d6544a1
+- path: github.com/gorilla/context
+  rev: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- path: github.com/gorilla/mux
+  rev: 599cba5e7b6137d46ddf58fb1765f5d928e69604
+- path: github.com/inconshreveable/mousetrap
+  rev: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - path: github.com/jtolds/gls
   rev: bb0351aa7eb6f322f32667d51375f26a2bca6628
+- path: github.com/kisielk/gotool
+  rev: 0de1eaf82fa3f583ce21fde859f1e7e0c5e9b220
 - path: github.com/labstack/echo
   rev: 948d607539e92f3974d8f24951c8975d7342e24a
 - path: github.com/labstack/gommon
@@ -41,6 +57,14 @@ vendors:
   rev: dda3de49cbfcec471bd7a70e6cc01fcc3ff90109
 - path: github.com/moul/http2curl
   rev: 4e24498b31dba4683efb9d35c1c8a91e2eda28c8
+- path: github.com/neelance/astrewrite
+  rev: 99348263ae862cc230986ce88deaddbf7edcc034
+- path: github.com/neelance/sourcemap
+  rev: 8c68805598ab8d5637b1a72b5f7d381ea0f39c31
+- path: github.com/onsi/ginkgo
+  rev: bb93381d543b0e5725244abe752214a110791d01
+- path: github.com/onsi/gomega
+  rev: c463cd2a8578290d4be7a25cba69de81cf35785e
 - path: github.com/opencontainers/go-digest
   rev: aa2ec055abd10d26d539eb630a92241b781ce4bc
 - path: github.com/parnurzeal/gorequest
@@ -49,16 +73,30 @@ vendors:
   rev: bfd5150e4e41705ded2129ec33379de1cb90b513
 - path: github.com/pmezard/go-difflib
   rev: 792786c7400a136282c1664665ae0a8db921c6c2
+- path: github.com/rcrowley/go-metrics
+  rev: 1f30fe9094a513ce4c700b9a54458bbb0c96996c
 - path: github.com/ruqqq/blockchainparser
   rev: 394f6c90d0ad232fa9622730fc96776c202259ce
 - path: github.com/ruqqq/carbonchain
-  rev: 3a967166980479ed2596d68db37bc706b8496e35
+  rev: 096ae743ae8a0b3ab570d119f57eb5579d81673f
+- path: github.com/shurcooL/go
+  rev: 16c2a662e939218caa19feb62fea301e6a7fa758
+- path: github.com/shurcooL/httpfs
+  rev: df3d5d88c59699064c4449a2d4e3db0f07e74ed9
 - path: github.com/smartystreets/assertions
   rev: c9ee7d9e9a2aeec0bee7c4a516f3e0ad7cb7e558
 - path: github.com/smartystreets/goconvey
   rev: 3bd662eac601ad6436e64776af2e112069eb2edc
+- path: github.com/spf13/cobra
+  rev: fcd0c5a1df88f5d6784cb4feead962c3f3d0b66c
+- path: github.com/spf13/pflag
+  rev: 9ff6c6923cfffbcd502984b8e0c80539a94968b7
+- path: github.com/stretchr/objx
+  rev: 1a9d0bb9f541897e62256577b352fdbc1fb4fd94
 - path: github.com/stretchr/testify
   rev: 4d4bfba8f1d1027c4fdbe371823030df51419987
+- path: github.com/syndtr/goleveldb
+  rev: 3c5717caf1475fd25964109a0fc640bd150fce43
 - path: github.com/valyala/bytebufferpool
   rev: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - path: github.com/valyala/fasttemplate
@@ -67,5 +105,15 @@ vendors:
   rev: 40541ccb1c6e64c947ed6f606b8a6cb4b67d7436
 - path: golang.org/x/net
   rev: d379faa25cbdc04d653984913a2ceb43b0bc46d7
+- path: golang.org/x/sync
+  rev: 86ddc858aa39d0f6cccccd733e482ddc52b852e9
 - path: golang.org/x/sys
   rev: e48874b42435b4347fc52bdee0424a52abc974d7
+- path: golang.org/x/tools
+  rev: 3537037b0ba3c86130e74019e3880dc7e4c83cef
+- path: gopkg.in/check.v1
+  rev: 20d25e2804050c1cd24a7eea1e7a6447dd0e74ec
+- path: gopkg.in/karalabe/cookiejar.v2
+  rev: 8dcd6a7f4951f6ff3ee9cbb919a06d8925822e57
+- path: gopkg.in/yaml.v2
+  rev: a3f3340b5840cee44f372bddb5880fcbc419b46a
