@@ -123,7 +123,7 @@ func getHashesForImage(imageName string) ([]string, error) {
 		panic(err)
 	}
 
-	inspect, _, err := dockerClient.ImageInspectWithRaw(context.Background(), strings.Replace(imageName, "docker/", "", 1))
+	inspect, _, err := dockerClient.ImageInspectWithRaw(context.Background(), strings.Replace(imageName, "library/", "", 1))
 	if err != nil {
 		return []string{}, err
 	}
