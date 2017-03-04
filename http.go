@@ -101,7 +101,9 @@ type SignatureRequest struct {
 }
 
 type GetRootPublicKeyForUserResponse struct {
-	PublicKeyCompressed string `json:"publicKey"`
+	PublicKeyCompressed string   `json:"publicKey"`
+	Images              []string `json:"images"`
+	RegisteredRepo      []string `json:"registeredRepo"`
 }
 
 type GetPublicKeysForImageResponse struct {
@@ -645,6 +647,8 @@ func GetRootPublicKeyForUser(c echo.Context) error {
 		return ShowErrorJSON(c, http.StatusBadRequest, ErrNameInvalid)
 	}
 	var publicKey string
+	images := make([]string, 0)
+	registeredRepo := make([]string, 0)
 	err := cc.Db.View(func(tx *bolt.Tx) error {
 		bRootKeys := tx.Bucket([]byte(BUCKET_ROOT_KEYS))
 		rootPublicKey := bRootKeys.Get([]byte(username))
@@ -654,13 +658,47 @@ func GetRootPublicKeyForUser(c echo.Context) error {
 
 		publicKey = hex.EncodeToString(rootPublicKey)
 
+		bKeys := tx.Bucket([]byte(BUCKET_KEYS))
+		bUsername := bKeys.Bucket([]byte(username))
+		if bUsername == nil {
+			return nil
+		}
+
+		bUsername.ForEach(func(k, v []byte) error {
+			if v == nil {
+				if bUsername.Bucket(k).Stats().KeyN > 0 && bUsername.Bucket(k).Stats().KeyN != bUsername.Bucket(k).Stats().BucketN-1 {
+					registeredRepo = append(registeredRepo, string(k))
+				}
+
+				bSignatures := tx.Bucket([]byte(BUCKET_SIGNATURES))
+				bUsername := bSignatures.Bucket([]byte(username))
+				if bUsername == nil {
+					return nil
+				}
+				bImage := bUsername.Bucket(k)
+				if bImage == nil {
+					return nil
+				}
+
+				bImage.ForEach(func(k2, v2 []byte) error {
+					if v2 == nil {
+						images = append(images, string(k)+":"+string(k2))
+					}
+
+					return nil
+				})
+			}
+
+			return nil
+		})
+
 		return nil
 	})
 	if err != nil {
 		return ShowErrorJSON(c, http.StatusBadRequest, err)
 	}
 
-	return c.JSONPretty(http.StatusOK, GetRootPublicKeyForUserResponse{PublicKeyCompressed: publicKey}, "  ")
+	return c.JSONPretty(http.StatusOK, GetRootPublicKeyForUserResponse{PublicKeyCompressed: publicKey, Images: images, RegisteredRepo: registeredRepo}, "  ")
 }
 
 // GetPublicKeysForImage
