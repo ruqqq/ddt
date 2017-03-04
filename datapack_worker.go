@@ -94,12 +94,14 @@ func (datapackWorker *DatapackWorker) ProcessDatapacks(cc *carbonchain.CarbonCha
 			//log.Printf("[%s] %x\r\n", datapack.OutputAddr, datapack.Data)
 			blockHash, err := cc.GetTransactionBlockHash(datapack.TxIds[0])
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				continue
 			}
 			//log.Printf("-> %x\r\n", blockHash)
 			confirmations, err := cc.GetBlockConfirmation(blockHash)
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				continue
 			}
 			//log.Printf("-> %d confirmations\r\n", confirmations)
 
