@@ -78,7 +78,7 @@ vendors:
 - path: github.com/ruqqq/blockchainparser
   rev: 394f6c90d0ad232fa9622730fc96776c202259ce
 - path: github.com/ruqqq/carbonchain
-  rev: c92082bbb9d8bb5bdb7930b7afc2f6edb2276ed1
+  rev: f594a5672b759a806bb5b015f89c7483baf383df
 - path: github.com/shurcooL/go
   rev: 16c2a662e939218caa19feb62fea301e6a7fa758
 - path: github.com/shurcooL/httpfs
